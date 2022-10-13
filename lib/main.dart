@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(500, 50),
-                            backgroundColor: Colors.blue,
+                            backgroundColor: Colors.blueAccent,
                           ),
                           onPressed: () {
                             BooksProvider.instance.insertBook(Books(
@@ -99,14 +99,16 @@ class _HomeState extends State<Home> {
                 );
               });
         },
+        backgroundColor: Colors.blueAccent,
         child: const Icon(
           Icons.add,
           size: 50,
         ),
       ),
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         centerTitle: true,
-        title: const Text('Available Books'),
+        title: const Text('Available Books', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
       ),
       body: FutureBuilder<List<Books>>(
           future: BooksProvider.instance.getAllBooks(),
@@ -124,56 +126,75 @@ class _HomeState extends State<Home> {
               itemBuilder: (context, index) {
                 Books book = books[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(
-                    leading: Container(
-                        height: 50,
-                        width: 50,
-                        child: Image.network(book.image, fit: BoxFit.cover)),
-                    trailing: IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text(
-                                  'Delete Book',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                content: const Text(
-                                    'Are you sure you want to delete this book ?'),
-                                actions: [
-                                  TextButton(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: 80,
+                    child: ListTile(
+                      leading: SizedBox(
+                          height: 150,
+                          width: 70,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(book.image,
+                                  fit: BoxFit.cover, height: 200,),)),
+                      trailing: IconButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text(
+                                    'Delete Book',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  content: const Text(
+                                      'Are you sure you want to delete this book ?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Cancel")),
+                                    TextButton(
                                       onPressed: () {
+                                        if (book.id != null) {
+                                          BooksProvider.instance
+                                              .deleteBook(book.id!);
+                                        }
+                                        print(books);
+                                        setState(() {});
                                         Navigator.pop(context);
                                       },
-                                      child: const Text("Cancel")),
-                                  TextButton(
-                                    onPressed: () {
-                                      if (book.id != null) {
-                                        BooksProvider.instance
-                                            .deleteBook(book.id!);
-                                      }
-                                      print(books);
-                                      setState(() {});
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text("Yes",
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                        )),
-                                  )
-                                ],
-                              );
-                            });
-                      },
-                      icon: const Icon(Icons.delete_forever),
+                                      child: const Text("Yes",
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                          )),
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                        icon: const Icon(
+                          Icons.delete_forever,
+                          size: 40,
+                        ),
+                      ),
+
+                      title: Padding(
+                        padding: const EdgeInsets.only(left: 10.0,),
+                        child: Text(
+                          book.name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(left: 10.0,),
+                        child: Text(book.author,
+                            style: const TextStyle(fontSize: 20)),
+                      ),
                     ),
-                    title: Text(
-                      book.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(book.author),
                   ),
                 );
               },

@@ -14,7 +14,7 @@ class Books {
   });
 
   Books.fromMap(Map<String, dynamic> map) {
-    if (id != null) {
+    if (map['id'] != null) {
       id = map['id'];
     }
     name = map['name'];
